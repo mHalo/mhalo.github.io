@@ -151,11 +151,10 @@
 			}
 		},
 		onError: function(xhr) {
+			console.info('xhr',xhr)
 			alert('加载出现异常，请刷新重试');
 		}
 	}
-
-	alert('obj start load-123456');
 
 	var baseObjUrl = THREEx.ArToolkitContext.baseURL + '../3dmax/'
 	
