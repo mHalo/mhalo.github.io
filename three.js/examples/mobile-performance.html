@@ -205,8 +205,8 @@
 		console.log( item, loaded, total );
 	};
 	var loader = new THREE.FBXLoader( ldmgr );
-	alert('obj start load-fbx-123456');
-	loader.load(baseObjUrl + 'daji.fbx', function( object ) {
+	alert('obj start load-fbx-1234567');
+	loader.load(baseObjUrl + 'daji-high.fbx', function( object ) {
 		alert('obj start load-fbx-over');
 		console.info('daji', object)
 		var material = new THREE.MeshPhongMaterial({
@@ -223,7 +223,7 @@
 		});
 
 
-		object.rotation.set(-90,0,90);
+		//object.rotation.set(-90,0,90);
 		object.position.set(0,0,0);
 		object.scale.set(5,5,5);
 
@@ -231,7 +231,6 @@
 		mixers.push( object.mixer );
 
 		
-		console.info('animations', object.animations)
 		var action = object.mixer.clipAction( object.animations[ 0 ] );
 		action.play();
 
