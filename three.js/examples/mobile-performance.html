@@ -9,6 +9,10 @@
 <script src='vendor/three.js/examples/js/loaders/FBXLoader.js'></script>
 <script src='vendor/three.js/examples/js/controls/OrbitControls.js'></script>
 
+<script src='/NURBSCurve.js'></script>
+<script src='/NURBSUtils.js'></script>
+<script src='/Detector.js'></script>
+
 <script src="vendor/three.js/examples/js/libs/stats.min.js"></script>
 <!-- ar.js -->
 <script src="../build/ar.js"></script>
@@ -22,6 +26,9 @@
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Init
 	//////////////////////////////////////////////////////////////////////////////////
+	var mixers = [];
+	var clock = new THREE.Clock();
+
 
 	// init renderer
 	var renderer	= new THREE.WebGLRenderer({
@@ -201,8 +208,16 @@
 	alert('obj start load-fbx-12');
 	loader.load(baseObjUrl + 'daji.fbx', function( object ) {
 			alert('obj start load-fbx-over');
-		object.rotation.y = -90;
+		object.rotation.z = -90;
 		object.position.set(0,0,0);
+
+		object.mixer = new THREE.AnimationMixer( object );
+		mixers.push( object.mixer );
+
+		var action = object.mixer.clipAction( object.animations[ 0 ] );
+		action.play();
+
+
 		arWorldRoot.add(object);
 	}, _loader.onProgress, _loader.onError );
 
@@ -235,6 +250,12 @@
 	requestAnimationFrame(function animate(nowMsec){
 		// keep looping
 		requestAnimationFrame( animate );
+		if ( mixers.length > 0 ) {
+			for ( var i = 0; i < mixers.length; i ++ ) {
+				mixers[ i ].update( clock.getDelta() );
+			}
+		}
+
 		// measure time
 		lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
 		var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
