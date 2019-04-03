@@ -113,7 +113,6 @@
 	////////////////////////////////////////////////////////////////////////////////
 	
 	var markerRoot = new THREE.Group
-	scene.add(markerRoot)
 	var artoolkitMarker = new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
 		type : 'pattern',
 		patternUrl : THREEx.ArToolkitContext.baseURL + '../data/data/patt.hiro'
@@ -192,7 +191,7 @@
 			// car.add(tray);
 
 			arWorldRoot.add(car); /*将模型添加入场景*/
-		});
+		}, _loader.onProgress, _loader.onError);
 	});
 
 
@@ -232,6 +231,7 @@
 
 
 
+	scene.add(markerRoot)
 
 
 
