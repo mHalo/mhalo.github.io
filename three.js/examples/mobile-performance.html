@@ -166,15 +166,9 @@
 	var loader = new THREE.FBXLoader( ldmgr );
 	alert('obj start load-fbx-1');
 	loader.load(baseObjUrl + 'daji.fbx', function( object ) {
-			alert('obj start load-fbx-over');
-		arWorldRoot.add(object);
+		alert('obj start load-fbx-over');
+		scene.add( mesh );
 	}, _loader.onProgress, _loader.onError );
-
-
-
-
-
-
 
 
 
