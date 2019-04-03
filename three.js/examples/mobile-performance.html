@@ -121,7 +121,7 @@
 
 	// build a smoothedControls
 	var smoothedRoot = new THREE.Group()
-	//scene.add(smoothedRoot)
+	scene.add(smoothedRoot)
 	var smoothedControls = new THREEx.ArSmoothedControls(smoothedRoot, {
 		lerpPosition: 0.4,
 		lerpQuaternion: 0.3,
@@ -155,7 +155,7 @@
 		}
 	}
 
-	alert('obj start load-123');
+	alert('obj start load-1234');
 	// THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
 	// var baseObjUrl = THREEx.ArToolkitContext.baseURL + '../3dmax/mx5/'
 	// var mtlLoader = new THREE.MTLLoader(); /*初始化3dmax导出文件mtl加载器*/
@@ -228,17 +228,6 @@
 	onRenderFcts.push(function(){
 		mesh.rotation.x += 0.1
 	})
-
-
-
-	scene.add(markerRoot)
-
-
-
-
-
-
-
 
 
 
