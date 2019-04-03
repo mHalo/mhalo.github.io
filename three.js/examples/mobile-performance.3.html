@@ -238,12 +238,12 @@
 		object.scale.set(10,10,10);
 		object.rotation.set(0,0,0)
 
-		// object.mixer = new THREE.AnimationMixer( object );
-		// mixers.push( object.mixer );
+		object.mixer = new THREE.AnimationMixer( object );
+		mixers.push( object.mixer );
 
 		
-		// var action = object.mixer.clipAction( object.animations[ 0 ] );
-		// action.play();
+		var action = object.mixer.clipAction( object.animations[ 0 ] );
+		action.play();
 
 		arWorldRoot.add(object);
 	}, _loader.onProgress, _loader.onError );
