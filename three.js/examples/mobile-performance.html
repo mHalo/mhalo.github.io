@@ -79,7 +79,6 @@
 
 				var stats = new Stats();
 				document.body.appendChild( stats.dom );
-
 				onRenderFcts.push(function(){
 					stats.update();
 				})
@@ -88,16 +87,16 @@
 			},
 			setupCamera :  function(_scene){
 				var _camera = new THREE.Camera();
-				scene.add(_camera);
+				_scene.add(_camera);
 				onRenderFcts.push(function(){
-					renderer.render(_scene, camera );
+					renderer.render(_scene, _camera );
 				})
+				return _camera;
 			},
-			setupArToolkit: function() {
+			setupArToolkit: function(_renderer,_camera) {
 				var _arToolkitSource = new THREEx.ArToolkitSource({
 					// to read from the webcam 
 					sourceType : 'webcam',
-
 					// to read from an image
 					// sourceType : 'image',
 					// sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/images/img.jpg',		
@@ -106,12 +105,28 @@
 					// sourceType : 'video',
 					// sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/videos/headtracking.mp4',		
 				});
+				
+				var _arToolkitContext = new THREEx.ArToolkitContext({
+					cameraParametersUrl: THREEx.ArToolkitContext.baseURL + '../data/data/camera_para.dat',
+					detectionMode: 'mono',
+					maxDetectionRate: 30,
+					canvasWidth: 80*3,
+					canvasHeight: 60*3,
+				})
+				_arToolkitContext.init(function onCompleted(){
+					_camera.projectionMatrix.copy( _arToolkitContext.getProjectionMatrix() );
+				})
+				
+				onRenderFcts.push(function(){
+					if( _arToolkitSource.ready === false )	return
+					_arToolkitContext.update( _arToolkitSource.domElement )
+				})
 
 				var _onResize = function() {
 					_arToolkitSource.onResize()	
 					_arToolkitSource.copySizeTo(renderer.domElement)	
-					if( arToolkitContext.arController !== null ){
-						_arToolkitSource.copySizeTo(arToolkitContext.arController.canvas)	
+					if(_arToolkitContext.arController !== null ){
+						_arToolkitSource.copySizeTo(_arToolkitContext.arController.canvas)	
 					}	
 				}
 
@@ -122,27 +137,11 @@
 				window.addEventListener('resize', function(){
 					onResize()
 				})
-				
-				var _arToolkitContext = new THREEx.ArToolkitContext({
-					cameraParametersUrl: THREEx.ArToolkitContext.baseURL + '../data/data/camera_para.dat',
-					detectionMode: 'mono',
-					maxDetectionRate: 30,
-					canvasWidth: 80*3,
-					canvasHeight: 60*3,
-				})
-				_arToolkitContext.init(function onCompleted(){
-					camera.projectionMatrix.copy( _arToolkitContext.getProjectionMatrix() );
-				})
-				
-				onRenderFcts.push(function(){
-					if( _arToolkitSource.ready === false )	return
-					_arToolkitContext.update( _arToolkitSource.domElement )
-				})
-				
+				return _arToolkitContext;
 			},
-			setupArMarker : function(_scene){
+			setupArMarker : function(_scene, _arToolkitContext){
 				var markerRoot = new THREE.Group();
-				var artoolkitMarker = new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
+				var artoolkitMarker = new THREEx.ArMarkerControls(_arToolkitContext, markerRoot, {
 					type : 'pattern',
 					patternUrl : THREEx.ArToolkitContext.baseURL + '../data/data/patt.hiro'
 				})
@@ -203,7 +202,6 @@
 						};
 					});
 
-
 					object.position.set(0,-12,0);
                     object.scale.set(10,10,10);
                     object.rotation.set(0,0,0)
@@ -220,12 +218,11 @@
 		}
 
 		var scene = app.setupScene();
-		app.setupArToolkit();
-		var container = app.setupArMarker(scene);
+		var camera = app.setupCamera(scene);
+		var renderer = app.setupRenderer();
+		var toolkitCxt = app.setupArToolkit(renderer, camera);
+		var container = app.setupArMarker(scene, toolkitCxt);
 		app.setupObject(container);
-		app.setupCamera(scene);
-		app.setupRenderer();
-
 
 		var lastTimeMsec= null
 		requestAnimationFrame(function animate(nowMsec){
