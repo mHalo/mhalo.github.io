@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<!-- three.js library -->
+<script src='vendor/three.js/build/three.min.js'></script>
+
+
+<script src='vendor/three.js/examples/js/loaders/OBJLoader.js'></script>
+<script src='vendor/three.js/examples/js/loaders/MTLLoader.js'></script>
+<script src='vendor/three.js/examples/js/loaders/FBXLoader.js'></script>
+<script src='vendor/three.js/examples/js/controls/OrbitControls.js'></script>
+
+<script src="vendor/three.js/examples/js/libs/stats.min.js"></script>
+<!-- ar.js -->
+<script src="../build/ar.js"></script>
+<script>THREEx.ArToolkitContext.baseURL = '../'</script>
+
+<body>
+
+
+<script>
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Init
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// init renderer
+	var renderer	= new THREE.WebGLRenderer({
+		// antialias	: true,
+		alpha: true
+	});
+	renderer.setClearColor(new THREE.Color('lightgrey'), 0)
+	// renderer.setPixelRatio( 1/2 );
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	renderer.domElement.style.position = 'absolute'
+	renderer.domElement.style.top = '0px'
+	renderer.domElement.style.left = '0px'
+	document.body.appendChild( renderer.domElement );
+
+	// array of functions for the rendering loop
+	var onRenderFcts= [];
+
+	// init scene and camera
+	var scene	= new THREE.Scene();
+	
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Initialize a basic camera
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// Create a camera
+	var camera = new THREE.Camera();
+	scene.add(camera);
+
+	////////////////////////////////////////////////////////////////////////////////
+	//          handle arToolkitSource
+	////////////////////////////////////////////////////////////////////////////////
+
+	var arToolkitSource = new THREEx.ArToolkitSource({
+		// to read from the webcam 
+		sourceType : 'webcam',
+
+		// to read from an image
+		// sourceType : 'image',
+		// sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/images/img.jpg',		
+
+		// to read from a video
+		// sourceType : 'video',
+		// sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/videos/headtracking.mp4',		
+	})
+
+	arToolkitSource.init(function onReady(){
+		onResize()
+	})
+	
+	// handle resize
+	window.addEventListener('resize', function(){
+		onResize()
+	})
+	function onResize(){
+		arToolkitSource.onResize()	
+		arToolkitSource.copySizeTo(renderer.domElement)	
+		if( arToolkitContext.arController !== null ){
+			arToolkitSource.copySizeTo(arToolkitContext.arController.canvas)	
+		}	
+	}
+	////////////////////////////////////////////////////////////////////////////////
+	//          initialize arToolkitContext
+	////////////////////////////////////////////////////////////////////////////////
+	
+
+	// create atToolkitContext
+	var arToolkitContext = new THREEx.ArToolkitContext({
+		cameraParametersUrl: THREEx.ArToolkitContext.baseURL + '../data/data/camera_para.dat',
+		detectionMode: 'mono',
+		maxDetectionRate: 30,
+		canvasWidth: 80*3,
+		canvasHeight: 60*3,
+	})
+	// initialize it
+	arToolkitContext.init(function onCompleted(){
+		// copy projection matrix to camera
+		camera.projectionMatrix.copy( arToolkitContext.getProjectionMatrix() );
+	})
+
+	// update artoolkit on every frame
+	onRenderFcts.push(function(){
+		if( arToolkitSource.ready === false )	return
+
+		arToolkitContext.update( arToolkitSource.domElement )
+	})
+	
+	
+	////////////////////////////////////////////////////////////////////////////////
+	//          Create a ArMarkerControls
+	////////////////////////////////////////////////////////////////////////////////
+	
+	var markerRoot = new THREE.Group();
+	var artoolkitMarker = new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
+		type : 'pattern',
+		patternUrl : THREEx.ArToolkitContext.baseURL + '../data/data/patt.hiro'
+		// patternUrl : THREEx.ArToolkitContext.baseURL + '../data/data/patt.kanji'
+	})
+
+	// build a smoothedControls
+	var smoothedRoot = new THREE.Group()
+	scene.add(smoothedRoot)
+	var smoothedControls = new THREEx.ArSmoothedControls(smoothedRoot, {
+		lerpPosition: 0.4,
+		lerpQuaternion: 0.3,
+		lerpScale: 1,
+	})
+	onRenderFcts.push(function(delta){
+		smoothedControls.update(markerRoot)
+	})
+	//////////////////////////////////////////////////////////////////////////////////
+	//		add an object in the scene
+	//////////////////////////////////////////////////////////////////////////////////
+
+	var arWorldRoot = smoothedRoot
+
+
+	// /*加载进度回调*/
+	var _loader = {
+		onProgress: function(xhr) {
+			if (xhr.lengthComputable) {
+				var percentComplete = xhr.loaded / xhr.total * 100;
+				var percent = Math.round(percentComplete, 2);
+				if (percent < 100) {
+					console.info(percent + "%")
+				} else {
+					alert("加载完毕")
+				}
+			}
+		},
+		onError: function(xhr) {
+			alert('加载出现异常，请刷新重试');
+		}
+	}
+
+	alert('obj start load-123456');
+	THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
+	var baseObjUrl = THREEx.ArToolkitContext.baseURL + '../3dmax/mx5/'
+	var mtlLoader = new THREE.MTLLoader(); /*初始化3dmax导出文件mtl加载器*/
+	var objLoader = new THREE.OBJLoader(); /*初始化obj文件加载器*/
+	mtlLoader.load(baseObjUrl + 'mx5.mtl', function(materials) { /*加载材质文件*/
+		materials.preload(); /*材质预加载*/
+		objLoader.setMaterials(materials); /*设置模型材质*/
+		//objLoader.setPath('3dmax/mx5/'); /*设置文件路径*/
+		alert('obj loading-xxxxx');
+		objLoader.load(baseObjUrl + 'mx5.obj', function(object) { /*加载模型文件*/
+			alert('obj loaded-!!!!!');
+			object.position.y = -6; /*设置模型初始化位置*/
+			object.scale.x = 0.08;
+			object.scale.y = 0.08;
+			object.scale.z = 0.08;
+			object.rotation.x = 0;
+			object.rotation.y = -1.8;
+			object.rotation.z = 0;
+			/*汽车托盘*/
+			// var trayArg = {
+			// 	geometry: new THREE.CylinderGeometry(12, 12, 0.5, 64, 1),
+			// 	material: new THREE.MeshBasicMaterial({
+			// 		color: 0x177cb0
+			// 	})
+			// }
+			// var tray = new THREE.Mesh(trayArg.geometry, trayArg.material);
+			// tray.position.set(0, -10, 0);
+
+			var car = new THREE.Object3D();
+			car.position.set(0, 0, 0);
+			car.add(object);
+			// car.position.set(0, 0, 0);
+			// car.add(tray);
+
+			var carbody = object.children.filter(s => {
+				return s.name == 'group2 polySurface544 polySurface8 polySurface547'
+			})[0];
+			if (carbody) {
+				var material = new THREE.MeshBasicMaterial({
+					color: 0x3385ff
+				});
+				material.needsUpdate = true;
+				carbody.material = material;
+			}
+
+			scene.add(car); /*将模型添加入场景*/
+		}, _loader.onProgress, _loader.onError);
+	});
+
+
+
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		render the whole thing on the page
+	//////////////////////////////////////////////////////////////////////////////////
+	var stats = new Stats();
+	document.body.appendChild( stats.dom );
+	// render the scene
+	onRenderFcts.push(function(){
+		renderer.render( scene, camera );
+		stats.update();
+	})
+
+	// run the rendering loop
+	var lastTimeMsec= null
+	requestAnimationFrame(function animate(nowMsec){
+		// keep looping
+		requestAnimationFrame( animate );
+		// measure time
+		lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
+		var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
+		lastTimeMsec	= nowMsec
+		// call each update function
+		onRenderFcts.forEach(function(onRenderFct){
+			onRenderFct(deltaMsec/1000, nowMsec/1000)
+		})
+	})
+</script></body>
