@@ -156,7 +156,7 @@
 		}
 	}
 
-	alert('obj start load');
+	alert('obj start load-1');
 	THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
 	var baseObjUrl = THREEx.ArToolkitContext.baseURL + '../3dmax/mx5/'
 	var mtlLoader = new THREE.MTLLoader(); /*初始化3dmax导出文件mtl加载器*/
@@ -167,7 +167,7 @@
 		//objLoader.setPath('3dmax/mx5/'); /*设置文件路径*/
 		alert('obj loading');
 		objLoader.load(baseObjUrl + 'mx5.obj', function(object) { /*加载模型文件*/
-		alert('obj loaded');
+			alert('obj loaded');
 			object.position.y = -6; /*设置模型初始化位置*/
 			object.scale.x = 0.08;
 			object.scale.y = 0.08;
@@ -192,7 +192,7 @@
 			// car.add(tray);
 
 			arWorldRoot.add(car); /*将模型添加入场景*/
-		}, _loader.onProgress, _loader.onError);
+		});
 	});
 
 
