@@ -165,11 +165,7 @@
 	// build a smoothedControls
 	var smoothedRoot = new THREE.Group()
 	scene.add(smoothedRoot)
-	var smoothedControls = new THREEx.ArSmoothedControls(smoothedRoot, {
-		lerpPosition: 0.4,
-		// lerpQuaternion: 0.3,
-		lerpScale: 1,
-	})
+	var smoothedControls = new THREEx.ArSmoothedControls(smoothedRoot)
 	
 
 	onRenderFcts.push(function(delta){
@@ -207,7 +203,7 @@
 		console.log( item, loaded, total );
 	};
 	var loader = new THREE.FBXLoader( ldmgr );
-	alert('obj start load-fbx-12345678');
+	alert('obj start load-fbx-123456789');
 	loader.load(baseObjUrl + 'daji-high.fbx', function( object ) {
 		alert('obj start load-fbx-over');
 		console.info('daji', object)
