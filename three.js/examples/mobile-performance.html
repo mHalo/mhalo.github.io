@@ -217,12 +217,13 @@
 			}
 		}
 
+		var renderer = app.setupRenderer();
 		var scene = app.setupScene();
 		var camera = app.setupCamera(scene);
-		var renderer = app.setupRenderer();
 		var toolkitCxt = app.setupArToolkit(renderer, camera);
 		var container = app.setupArMarker(scene, toolkitCxt);
 		app.setupObject(container);
+
 
 		var lastTimeMsec= null
 		requestAnimationFrame(function animate(nowMsec){
