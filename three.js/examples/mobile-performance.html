@@ -207,7 +207,7 @@
 		console.log( item, loaded, total );
 	};
 	var loader = new THREE.FBXLoader( ldmgr );
-	alert('obj start load-fbx-1234567');
+	alert('obj start load-fbx-12345678');
 	loader.load(baseObjUrl + 'daji-high.fbx', function( object ) {
 		alert('obj start load-fbx-over');
 		console.info('daji', object)
@@ -227,7 +227,7 @@
 
 		//object.rotation.set(-90,0,90);
 		object.position.set(0,0,0);
-		object.scale.set(5,5,5);
+		object.scale.set(1,1,1);
 
 		object.mixer = new THREE.AnimationMixer( object );
 		mixers.push( object.mixer );
