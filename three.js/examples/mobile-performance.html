@@ -139,58 +139,59 @@
 
 
 	// /*加载进度回调*/
-	// var _loader = {
-	// 	onProgress: function(xhr) {
-	// 		if (xhr.lengthComputable) {
-	// 			var percentComplete = xhr.loaded / xhr.total * 100;
-	// 			var percent = Math.round(percentComplete, 2);
-	// 			if (percent < 100) {
-	// 				console.info(percent + "%")
-	// 			} else {
-	// 				console.info("加载完毕")
-	// 			}
-	// 			console.info("加载完毕")
-	// 		}
-	// 	},
-	// 	onError: function(xhr) {
-	// 		console.log('加载出现异常，请刷新重试');
-	// 	}
-	// }
-	// THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
-	// var baseObjUrl = THREEx.ArToolkitContext.baseURL + '../3dmax/mx5/'
-	// var mtlLoader = new THREE.MTLLoader(); /*初始化3dmax导出文件mtl加载器*/
-	// mtlLoader.load(baseObjUrl + 'mx5.mtl', function(materials) { /*加载材质文件*/
-	// 	materials.preload(); /*材质预加载*/
-	// 	var objLoader = new THREE.OBJLoader(); /*初始化obj文件加载器*/
-	// 	objLoader.setMaterials(materials); /*设置模型材质*/
-	// 	//objLoader.setPath('3dmax/mx5/'); /*设置文件路径*/
-	// 	objLoader.load(baseObjUrl + 'mx5.obj', function(object) { /*加载模型文件*/
-	// 		// object.position.y = -6; /*设置模型初始化位置*/
-	// 		// object.scale.x = 0.08;
-	// 		// object.scale.y = 0.08;
-	// 		// object.scale.z = 0.08;
-	// 		// object.rotation.x = 0;
-	// 		// object.rotation.y = -1.8;
-	// 		// object.rotation.z = 0;
-	// 		/*汽车托盘*/
-	// 		// var trayArg = {
-	// 		// 	geometry: new THREE.CylinderGeometry(12, 12, 0.5, 64, 1),
-	// 		// 	material: new THREE.MeshBasicMaterial({
-	// 		// 		color: 0x177cb0
-	// 		// 	})
-	// 		// }
-	// 		// var tray = new THREE.Mesh(trayArg.geometry, trayArg.material);
-	// 		// tray.position.set(0, -10, 0);
+	var _loader = {
+		onProgress: function(xhr) {
+			if (xhr.lengthComputable) {
+				var percentComplete = xhr.loaded / xhr.total * 100;
+				var percent = Math.round(percentComplete, 2);
+				if (percent < 100) {
+					console.info(percent + "%")
+				} else {
+					console.info("加载完毕")
+				}
+				console.info("加载完毕")
+			}
+		},
+		onError: function(xhr) {
+			console.log('加载出现异常，请刷新重试');
+		}
+	}
+	THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
+	var baseObjUrl = THREEx.ArToolkitContext.baseURL + '../3dmax/mx5/'
+	var mtlLoader = new THREE.MTLLoader(); /*初始化3dmax导出文件mtl加载器*/
+	mtlLoader.load(baseObjUrl + 'mx5.mtl', function(materials) { /*加载材质文件*/
+		materials.preload(); /*材质预加载*/
+		var objLoader = new THREE.OBJLoader(); /*初始化obj文件加载器*/
+		objLoader.setMaterials(materials); /*设置模型材质*/
+		//objLoader.setPath('3dmax/mx5/'); /*设置文件路径*/
+		objLoader.load(baseObjUrl + 'mx5.obj', function(object) { /*加载模型文件*/
+		alert('obj loaded');
+			object.position.y = -6; /*设置模型初始化位置*/
+			object.scale.x = 0.08;
+			object.scale.y = 0.08;
+			object.scale.z = 0.08;
+			object.rotation.x = 0;
+			object.rotation.y = -1.8;
+			object.rotation.z = 0;
+			/*汽车托盘*/
+			// var trayArg = {
+			// 	geometry: new THREE.CylinderGeometry(12, 12, 0.5, 64, 1),
+			// 	material: new THREE.MeshBasicMaterial({
+			// 		color: 0x177cb0
+			// 	})
+			// }
+			// var tray = new THREE.Mesh(trayArg.geometry, trayArg.material);
+			// tray.position.set(0, -10, 0);
 
-	// 		car = new THREE.Object3D();
-	// 		car.position.set(0, 0, 0);
-	// 		car.add(object);
-	// 		// car.position.set(0, 0, 0);
-	// 		// car.add(tray);
+			car = new THREE.Object3D();
+			car.position.set(0, 0, 0);
+			car.add(object);
+			// car.position.set(0, 0, 0);
+			// car.add(tray);
 
-	// 		arWorldRoot.add(car); /*将模型添加入场景*/
-	// 	}, _loader.onProgress, _loader.onError);
-	// });
+			arWorldRoot.add(car); /*将模型添加入场景*/
+		}, _loader.onProgress, _loader.onError);
+	});
 
 
 
