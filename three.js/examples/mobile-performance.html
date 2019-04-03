@@ -32,8 +32,9 @@
 
 	// init renderer
 	var renderer	= new THREE.WebGLRenderer({
-		// antialias	: true,
-		alpha: true
+		antialias:true,       //是否开启反锯齿
+		precision:"highp",    //着色精度选择
+		alpha:true,           //是否可以设置背景色透明
 	});
 	renderer.setClearColor(new THREE.Color('lightgrey'), 0)
 	// renderer.setPixelRatio( 1/2 );
@@ -204,19 +205,18 @@
 		console.log( item, loaded, total );
 	};
 	var loader = new THREE.FBXLoader( ldmgr );
-	alert('obj start load-fbx-12345');
+	alert('obj start load-fbx-123456');
 	loader.load(baseObjUrl + 'daji.fbx', function( object ) {
 		alert('obj start load-fbx-over');
-
 		console.info('daji', object)
+		var material = new THREE.MeshPhongMaterial({
+			map:texturePlante
+		});
 
 		object.traverse( function ( child ) {
 			console.info('data-child', child)
-			var material = new THREE.MeshPhongMaterial({
-				map:texturePlante
-			});
-			child.material=material;
 			if ( child.isMesh ) {
+				child.material=material;
 				child.castShadow = true;
 				child.receiveShadow = true;
 			};
@@ -225,12 +225,13 @@
 
 		object.rotation.set(-90,0,90);
 		object.position.set(0,0,0);
+		object.scale.set(5,5,5);
 
 		object.mixer = new THREE.AnimationMixer( object );
 		mixers.push( object.mixer );
 
 		
-
+		console.info('animations', object.animations)
 		var action = object.mixer.clipAction( object.animations[ 0 ] );
 		action.play();
 
