@@ -187,8 +187,6 @@
 				var percent = Math.round(percentComplete, 2);
 				if (percent < 100) {
 					console.info(percent + "%")
-				} else {
-					alert("加载完毕")
 				}
 			}
 		},
@@ -205,7 +203,7 @@
 		console.log( item, loaded, total );
 	};
 	var loader = new THREE.FBXLoader( ldmgr );
-	alert('obj start load-fbx-12');
+	alert('obj start load-fbx-123');
 	loader.load(baseObjUrl + 'daji.fbx', function( object ) {
 			alert('obj start load-fbx-over');
 		object.rotation.z = -90;
