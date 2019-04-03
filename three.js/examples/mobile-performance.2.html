@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<!-- three.js library -->
 <script src='vendor/three.js/build/three.min.js'></script>
 
+
+<script src='vendor/three.js/examples/js/loaders/OBJLoader.js'></script>
+<script src='vendor/three.js/examples/js/loaders/MTLLoader.js'></script>
 <script src='vendor/three.js/examples/js/loaders/FBXLoader.js'></script>
 <script src='vendor/three.js/examples/js/controls/OrbitControls.js'></script>
 
@@ -10,262 +14,18 @@
 <script src='/Detector.js'></script>
 
 <script src="vendor/three.js/examples/js/libs/stats.min.js"></script>
-<script src='/zlib.js'></script>
 <!-- ar.js -->
 <script src="../build/ar.js"></script>
+<script src='/zlib.js'></script>
 <script>THREEx.ArToolkitContext.baseURL = '../'</script>
+
 <body>
 
-</body>
-</html>
+
 <script>
-	;(function(){
-		var $this = this;
-		var mixers = [];
-		var clock = new THREE.Clock();
-		var modelname = "daji_s1",masksObj = ['daji_s1'];
-		// array of functions for the rendering loop
-		var onRenderFcts= [];
-
-		var app = {
-			setupRenderer : function(){
-				var _renderer = new THREE.WebGL_Renderer({
-					antialias:true,       //是否开启反锯齿
-					precision:"highp",    //着色精度选择
-					alpha:true,           //是否可以设置背景色透明
-				});
-				_renderer.setClearColor(new THREE.Color('lightgrey'), 0)
-				_renderer.setSize( window.innerWidth, window.innerHeight );
-				_renderer.setPixelRatio( window.devicePixelRatio );
-				_renderer.domElement.style.position = 'absolute'
-				_renderer.domElement.style.top = '0px'
-				_renderer.domElement.style.left = '0px'
-
-				_renderer.shadowMap.enabled = true;
-				_renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-				_renderer.gammaInput = true;
-				_renderer.gammaOutput = true;
-				document.body.appendChild( _renderer.domElement );
-				return _renderer;
-			},
-			setupScene : function(){
-				var _scene	= new THREE.Scene();
-				_scene.add(new THREE.AmbientLight(0xffffff, 0.50)); /*添加环境光*/
-				
-				var spotLight = new THREE.SpotLight( 0xffffff, 1.02 );
-				spotLight.position.set( -5.30, 35.22, 46.52 );
-				spotLight.angle = 0.814;
-				spotLight.penumbra = 0.94;
-				spotLight.decay = 0.94;
-				spotLight.distance = 0;
-				spotLight.castShadow = true;
-				_scene.add(spotLight)
-
-				var spotLight2 = new THREE.SpotLight( 0xffffff, 0.24 );
-				spotLight2.position.set( 0, 45, 0 );
-				spotLight2.angle = 0.234;
-				spotLight2.penumbra = 0.05;
-				spotLight2.decay = 1;
-				spotLight2.distance = 0;
-				spotLight2.castShadow = true;
-				_scene.add(spotLight2)
-
-				var hemisphereLight = new THREE.HemisphereLight( 0x00aaff, 0xffaa00, 0.12 );
-				_scene.add( hemisphereLight );
-
-				var pointLight = new THREE.PointLight( 0xffffff, 0.54, 0, 0.76 );
-				pointLight.position.set( 0, 33.70, 0 );
-				_scene.add( pointLight );
-
-				var stats = new Stats();
-				document.body.appendChild( stats.dom );
-
-				onRenderFcts.push(function(){
-					stats.update();
-				})
-
-				return _scene;
-			},
-			setupCamera :  function(_scene){
-				var _camera = new THREE.Camera();
-				scene.add(_camera);
-				onRenderFcts.push(function(){
-					renderer.render(_scene, camera );
-				})
-			},
-			setupArToolkit: function() {
-				var _arToolkitSource = new THREEx.ArToolkitSource({
-					// to read from the webcam 
-					sourceType : 'webcam',
-
-					// to read from an image
-					// sourceType : 'image',
-					// sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/images/img.jpg',		
-
-					// to read from a video
-					// sourceType : 'video',
-					// sourceUrl : THREEx.ArToolkitContext.baseURL + '../data/videos/headtracking.mp4',		
-				});
-
-				var _onResize = function() {
-					_arToolkitSource.onResize()	
-					_arToolkitSource.copySizeTo(renderer.domElement)	
-					if( arToolkitContext.arController !== null ){
-						_arToolkitSource.copySizeTo(arToolkitContext.arController.canvas)	
-					}	
-				}
-
-				_arToolkitSource.init(function onReady(){
-					onResize()
-				})
-
-				window.addEventListener('resize', function(){
-					onResize()
-				})
-				
-				var _arToolkitContext = new THREEx.ArToolkitContext({
-					cameraParametersUrl: THREEx.ArToolkitContext.baseURL + '../data/data/camera_para.dat',
-					detectionMode: 'mono',
-					maxDetectionRate: 30,
-					canvasWidth: 80*3,
-					canvasHeight: 60*3,
-				})
-				_arToolkitContext.init(function onCompleted(){
-					camera.projectionMatrix.copy( _arToolkitContext.getProjectionMatrix() );
-				})
-				
-				onRenderFcts.push(function(){
-					if( _arToolkitSource.ready === false )	return
-					_arToolkitContext.update( _arToolkitSource.domElement )
-				})
-				
-			},
-			setupArMarker : function(_scene){
-				var markerRoot = new THREE.Group();
-				var artoolkitMarker = new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
-					type : 'pattern',
-					patternUrl : THREEx.ArToolkitContext.baseURL + '../data/data/patt.hiro'
-				})
-				var smoothedRoot = new THREE.Group()
-				_scene.add(smoothedRoot)
-				var smoothedControls = new THREEx.ArSmoothedControls(smoothedRoot, {
-					//lerpPosition: 0.4,
-					//lerpQuaternion: 1,
-					//lerpScale: 1,
-				})
-				onRenderFcts.push(function(delta){
-					smoothedControls.update(markerRoot)
-				})
-
-				return smoothedRoot;
-			},
-			setupObject : function(_container){
-				// /*加载进度回调*/
-				var _loader = {
-					onProgress: function(xhr) {
-						if (xhr.lengthComputable) {
-							var percentComplete = xhr.loaded / xhr.total * 100;
-							var percent = Math.round(percentComplete, 2);
-							if (percent < 100) {
-								console.info(percent + "%")
-							}
-						}
-					},
-					onError: function(xhr) {
-						console.info('xhr',xhr)
-						alert('加载出现异常，请刷新重试');
-					}
-				}
-
-				var baseObjUrl = THREEx.ArToolkitContext.baseURL + '../3dmax/'
-				var texturePlante = THREE.ImageUtils.loadTexture(baseObjUrl + modelname + ".png",null,function(t){});//模型贴图
-				
-				var ldmgr = new THREE.LoadingManager();
-				ldmgr.onProgress = function( item, loaded, total ) {
-					console.log( item, loaded, total );
-				};
-				var loader = new THREE.FBXLoader( ldmgr );
-				alert('obj start load-fbx-0');
-				loader.load(baseObjUrl +  modelname + '.fbx', function( object ) {
-					alert('obj start load-fbx-over');
-					console.info('daji', object)
-					var material = new THREE.MeshPhongMaterial({
-						map:texturePlante
-					});
-					if(masksObj.indexOf(modelname) > -1){
-                        material.specularMap = new THREE.TextureLoader().load(baseObjUrl + modelname + ".mask.png");
-                    }
-					object.traverse( function ( child ) {
-						if ( child.isMesh ) {
-							child.material= material;
-							child.castShadow = true;
-							child.receiveShadow = true;
-						};
-					});
-
-
-					object.position.set(0,-12,0);
-                    object.scale.set(10,10,10);
-                    object.rotation.set(0,0,0)
-
-					// object.mixer = new THREE.AnimationMixer( object );
-					// mixers.push( object.mixer );
-					
-					// var action = object.mixer.clipAction( object.animations[ 0 ] );
-					// action.play();
-
-					_container.add(object);
-				}, _loader.onProgress, _loader.onError );
-			}
-		}
-
-		var scene = app.setupScene();
-		app.setupArToolkit();
-		var container = app.setupArMarker(scene);
-		app.setupObject(container);
-		app.setupCamera(scene);
-		app.setupRenderer();
-
-
-		var lastTimeMsec= null
-		requestAnimationFrame(function animate(nowMsec){
-			requestAnimationFrame(animate);
-			if ( mixers.length > 0 ) {
-				for ( var i = 0; i < mixers.length; i ++ ) {
-					mixers[ i ].update( clock.getDelta() );
-				}
-			}
-			// controls.update();
-			lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
-			var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
-			lastTimeMsec	= nowMsec
-			onRenderFcts.forEach(function(onRenderFct){
-				onRenderFct(deltaMsec/1000, nowMsec/1000)
-			})
-		})
-		
-
-
-
-
-
-	})();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Init
+	//////////////////////////////////////////////////////////////////////////////////
 	var mixers = [];
 	var clock = new THREE.Clock();
 
@@ -279,7 +39,6 @@
 	renderer.setClearColor(new THREE.Color('lightgrey'), 0)
 	// renderer.setPixelRatio( 1/2 );
 	renderer.setSize( window.innerWidth, window.innerHeight );
-	renderer.setPixelRatio( window.devicePixelRatio );
 	renderer.domElement.style.position = 'absolute'
 	renderer.domElement.style.top = '0px'
 	renderer.domElement.style.left = '0px'
@@ -290,6 +49,7 @@
 	renderer.gammaOutput = true;
 
 
+	document.body.appendChild( renderer.domElement );
 
 	// array of functions for the rendering loop
 	var onRenderFcts= [];
@@ -451,14 +211,14 @@
 	loader.load(baseObjUrl + 'daji-high.fbx', function( object ) {
 		alert('obj start load-fbx-over');
 		console.info('daji', object)
-		
 		var material = new THREE.MeshPhongMaterial({
 			map:texturePlante
 		});
+
 		object.traverse( function ( child ) {
 			console.info('data-child', child)
 			if ( child.isMesh ) {
-				child.material= material;
+				child.material=material;
 				child.castShadow = true;
 				child.receiveShadow = true;
 			};
@@ -471,6 +231,7 @@
 
 		// object.mixer = new THREE.AnimationMixer( object );
 		// mixers.push( object.mixer );
+
 		
 		// var action = object.mixer.clipAction( object.animations[ 0 ] );
 		// action.play();
@@ -479,10 +240,16 @@
 	}, _loader.onProgress, _loader.onError );
 
 
-	// var controls = new THREE.OrbitControls( camera, renderer.domElement );
-	// controls.target.set( 0, 0, 0 );
-	// controls.enableZoom = true;
-	// controls.update();
+	var controls = new THREE.OrbitControls( camera, renderer.domElement );
+	controls.target.set( 0, 0, 0 );
+	controls.enableZoom = true;
+	controls.update();
+
+
+
+
+	
+
 
 
 	//////////////////////////////////////////////////////////////////////////////////
@@ -501,12 +268,13 @@
 	requestAnimationFrame(function animate(nowMsec){
 		// keep looping
 		requestAnimationFrame( animate );
-		// if ( mixers.length > 0 ) {
-		// 	for ( var i = 0; i < mixers.length; i ++ ) {
-		// 		mixers[ i ].update( clock.getDelta() );
-		// 	}
-		// }
-		// controls.update();
+		if ( mixers.length > 0 ) {
+			for ( var i = 0; i < mixers.length; i ++ ) {
+				mixers[ i ].update( clock.getDelta() );
+			}
+		}
+
+		controls.update();
 
 		// measure time
 		lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
@@ -517,5 +285,4 @@
 			onRenderFct(deltaMsec/1000, nowMsec/1000)
 		})
 	})
-</script>
-
+</script></body>
