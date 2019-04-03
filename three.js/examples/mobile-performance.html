@@ -197,24 +197,42 @@
 	}
 
 	var baseObjUrl = THREEx.ArToolkitContext.baseURL + '../3dmax/'
+	var texturePlante = THREE.ImageUtils.loadTexture(baseObjUrl + "daji.png",null,function(t){});//模型贴图
 	
 	var ldmgr = new THREE.LoadingManager();
 	ldmgr.onProgress = function( item, loaded, total ) {
 		console.log( item, loaded, total );
 	};
 	var loader = new THREE.FBXLoader( ldmgr );
-	alert('obj start load-fbx-123');
+	alert('obj start load-fbx-12345');
 	loader.load(baseObjUrl + 'daji.fbx', function( object ) {
-			alert('obj start load-fbx-over');
-		object.rotation.z = -90;
+		alert('obj start load-fbx-over');
+
+		console.info('daji', object)
+
+		object.traverse( function ( child ) {
+			console.info('data-child', child)
+			var material = new THREE.MeshPhongMaterial({
+				map:texturePlante
+			});
+			child.material=material;
+			if ( child.isMesh ) {
+				child.castShadow = true;
+				child.receiveShadow = true;
+			};
+		});
+
+
+		object.rotation.set(-90,0,90);
 		object.position.set(0,0,0);
 
 		object.mixer = new THREE.AnimationMixer( object );
 		mixers.push( object.mixer );
 
+		
+
 		var action = object.mixer.clipAction( object.animations[ 0 ] );
 		action.play();
-
 
 		arWorldRoot.add(object);
 	}, _loader.onProgress, _loader.onError );
