@@ -6,8 +6,8 @@
     <meta charset="utf-8" />
     <title>海马汽车模型演示</title>
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <link type="text/css" rel="stylesheet" href="/content/reset.css" />
-    <link type="text/css" rel="stylesheet" href="/content/index.css" />
+    <link type="text/css" rel="stylesheet" href="./content/reset.css" />
+    <link type="text/css" rel="stylesheet" href="./content/index.css" />
 
     <style>
         canvas {
@@ -34,26 +34,26 @@
 </body>
 
 </html>
-<script src="/scripts/threejs/three.js"></script>
-<script src="/scripts/threejs/loaders/DDSLoader.js"></script>
-<script src="/scripts/threejs/loaders/MTLLoader.js"></script>
-<script src="/scripts/threejs/loaders/OBJLoader.js"></script>
-<script src="/scripts/threejs/loaders/FBXLoader.js"></script>
+<script src="./scripts/threejs/three.js"></script>
+<script src="./scripts/threejs/loaders/DDSLoader.js"></script>
+<script src="./scripts/threejs/loaders/MTLLoader.js"></script>
+<script src="./scripts/threejs/loaders/OBJLoader.js"></script>
+<script src="./scripts/threejs/loaders/FBXLoader.js"></script>
 
 
-<script src="/scripts/threejs/Detector.js"></script>
-<script src="/scripts/threejs/controls/TrackballControls.js"></script>
-<script src="/scripts/threejs/controls/DragControls.js"></script>
-<script src="/scripts/threejs/controls/EditorControls.js"></script>
-<script src="/scripts/threejs/controls/FirstPersonControls.js"></script>
-<script src="/scripts/threejs/controls/FlyControls.js"></script>
-<script src="/scripts/threejs/controls/PointerLockControls.js"></script>
-<script src="/scripts/threejs/controls/OrbitControls.js"></script>
-<script src="/scripts/threejs/libs/stats.min.js"></script>
+<script src="./scripts/threejs/Detector.js"></script>
+<script src="./scripts/threejs/controls/TrackballControls.js"></script>
+<script src="./scripts/threejs/controls/DragControls.js"></script>
+<script src="./scripts/threejs/controls/EditorControls.js"></script>
+<script src="./scripts/threejs/controls/FirstPersonControls.js"></script>
+<script src="./scripts/threejs/controls/FlyControls.js"></script>
+<script src="./scripts/threejs/controls/PointerLockControls.js"></script>
+<script src="./scripts/threejs/controls/OrbitControls.js"></script>
+<script src="./scripts/threejs/libs/stats.min.js"></script>
 <script src="https://unpkg.com/alloytouch@0.2.5/alloy_touch.js"></script>
 <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 
-<script src="/scripts/threejs/zlib.js"></script>
+<script src="./scripts/threejs/zlib.js"></script>
 
 <script>
     ;
@@ -73,7 +73,7 @@
             }
             var initScene = function() {
                 scene = new THREE.Scene(); /*场景*/
-                scene.background = new THREE.TextureLoader().load("/images/mx5-bg.jpg");
+                scene.background = new THREE.TextureLoader().load("./images/mx5-bg.jpg");
                 
                 scene.add(new THREE.AmbientLight(0xffffff, 0.50)); /*添加环境光*/
                 
