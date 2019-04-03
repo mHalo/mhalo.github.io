@@ -147,13 +147,12 @@
 				if (percent < 100) {
 					console.info(percent + "%")
 				} else {
-					console.info("加载完毕")
+					alert("加载完毕")
 				}
-				console.info("加载完毕")
 			}
 		},
 		onError: function(xhr) {
-			console.log('加载出现异常，请刷新重试');
+			alert('加载出现异常，请刷新重试');
 		}
 	}
 
