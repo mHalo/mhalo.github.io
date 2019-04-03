@@ -243,12 +243,13 @@
 	var controls = new THREE.OrbitControls( camera, renderer.domElement );
 	controls.target.set( 0, 0, 0 );
 	camera.position.set( 0, 0, 0 );
+	controls.enableZoom = true;
 	controls.update();
 
 
 
 
-
+	
 
 
 
@@ -274,6 +275,8 @@
 			}
 		}
 
+		controls.update();
+		
 		// measure time
 		lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
 		var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
