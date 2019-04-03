@@ -156,6 +156,8 @@
 			console.log('加载出现异常，请刷新重试');
 		}
 	}
+
+	alert('obj start load');
 	THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
 	var baseObjUrl = THREEx.ArToolkitContext.baseURL + '../3dmax/mx5/'
 	var mtlLoader = new THREE.MTLLoader(); /*初始化3dmax导出文件mtl加载器*/
@@ -164,6 +166,7 @@
 		var objLoader = new THREE.OBJLoader(); /*初始化obj文件加载器*/
 		objLoader.setMaterials(materials); /*设置模型材质*/
 		//objLoader.setPath('3dmax/mx5/'); /*设置文件路径*/
+		alert('obj loading');
 		objLoader.load(baseObjUrl + 'mx5.obj', function(object) { /*加载模型文件*/
 		alert('obj loaded');
 			object.position.y = -6; /*设置模型初始化位置*/
