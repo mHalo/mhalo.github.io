@@ -155,7 +155,7 @@
 		}
 	}
 
-	alert('obj start load-12345');
+	alert('obj start load-123456');
 	THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader());
 	var baseObjUrl = THREEx.ArToolkitContext.baseURL + '../3dmax/mx5/'
 	var mtlLoader = new THREE.MTLLoader(); /*初始化3dmax导出文件mtl加载器*/
@@ -190,7 +190,18 @@
 			// car.position.set(0, 0, 0);
 			// car.add(tray);
 
-			arWorldRoot.add(car); /*将模型添加入场景*/
+			var carbody = object.children.filter(s => {
+				return s.name == 'group2 polySurface544 polySurface8 polySurface547'
+			})[0];
+			if (carbody) {
+				var material = new THREE.MeshBasicMaterial({
+					color: 0x3385ff
+				});
+				material.needsUpdate = true;
+				carbody.material = material;
+			}
+
+			scene.add(car); /*将模型添加入场景*/
 		}, _loader.onProgress, _loader.onError);
 	});
 
