@@ -205,7 +205,7 @@
 	}
 
 	var baseObjUrl = THREEx.ArToolkitContext.baseURL + '../3dmax/'
-	var texturePlante = THREE.ImageUtils.loadTexture(baseObjUrl + "daji_s1.png",null,function(t){});//模型贴图
+	var texturePlante = THREE.ImageUtils.loadTexture(baseObjUrl + "daji_s2.png",null,function(t){});//模型贴图
 	
 	var ldmgr = new THREE.LoadingManager();
 	ldmgr.onProgress = function( item, loaded, total ) {
@@ -213,14 +213,14 @@
 	};
 	var loader = new THREE.FBXLoader( ldmgr );
 	alert('obj start load-fbx-123456789');
-	loader.load(baseObjUrl + 'daji_s1.fbx', function( object ) {
+	loader.load(baseObjUrl + 'daji_s2.fbx', function( object ) {
 		alert('obj start load-fbx-over');
 		console.info('daji', object)
 		var material = new THREE.MeshPhongMaterial({
 			map:texturePlante
 		});
 		
-		material.specularMap = new THREE.TextureLoader().load(baseObjUrl + "daji_s1.mask.png");
+		material.specularMap = new THREE.TextureLoader().load(baseObjUrl + "daji_s2.mask.png");
 
 		object.traverse( function ( child ) {
 			console.info('data-child', child)
