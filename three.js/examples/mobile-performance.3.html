@@ -207,7 +207,6 @@
 		console.log( item, loaded, total );
 	};
 	var loader = new THREE.FBXLoader( ldmgr );
-	alert('obj start load-fbx-0');
 	loader.load(baseObjUrl + 'daji_s2.fbx', function( object ) {
 		alert('obj start load-fbx-over');
 		console.info('daji', object)
@@ -225,7 +224,8 @@
 		});
 
 
-		//object.rotation.set(-90,0,90);
+		alert('obj start load-fbx-01');
+		object.rotation.set(0,90,0);
 		object.position.set(0,0,0);
 		object.scale.set(1,1,1);
 
