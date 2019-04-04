@@ -84,11 +84,6 @@
 	scene.add( pointLight );
 
 	
-	var gridHelper = new THREE.GridHelper( 25, 25 ) ;
-	gridHelper.position.y = -12; 
-	scene.add( gridHelper );
-
-	
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Initialize a basic camera
 	//////////////////////////////////////////////////////////////////////////////////
@@ -205,7 +200,7 @@
 	}
 
 	var baseObjUrl = THREEx.ArToolkitContext.baseURL + '../3dmax/'
-	var texturePlante = THREE.ImageUtils.loadTexture(baseObjUrl + "huowu.png",null,function(t){});//模型贴图
+	var texturePlante = THREE.ImageUtils.loadTexture(baseObjUrl + "daji_s1.png",null,function(t){});//模型贴图
 	
 	var ldmgr = new THREE.LoadingManager();
 	ldmgr.onProgress = function( item, loaded, total ) {
@@ -213,14 +208,12 @@
 	};
 	var loader = new THREE.FBXLoader( ldmgr );
 	alert('obj start load-fbx-123456789');
-	loader.load(baseObjUrl + 'huowu.fbx', function( object ) {
+	loader.load(baseObjUrl + 'daji-s1.fbx', function( object ) {
 		alert('obj start load-fbx-over');
 		console.info('daji', object)
 		var material = new THREE.MeshPhongMaterial({
 			map:texturePlante
 		});
-		
-		material.specularMap = new THREE.TextureLoader().load(baseObjUrl + "huowu.mask.png");
 
 		object.traverse( function ( child ) {
 			console.info('data-child', child)
@@ -233,17 +226,15 @@
 
 
 		//object.rotation.set(-90,0,90);
-		
-		object.position.set(0,-12,0);
+		object.position.set(0,0,0);
 		object.scale.set(1,1,1);
-		object.rotation.set(0,0,0)
 
-		object.mixer = new THREE.AnimationMixer( object );
-		mixers.push( object.mixer );
+		// object.mixer = new THREE.AnimationMixer( object );
+		// mixers.push( object.mixer );
 
 		
-		var action = object.mixer.clipAction( object.animations[ 0 ] );
-		action.play();
+		// var action = object.mixer.clipAction( object.animations[ 0 ] );
+		// action.play();
 
 		arWorldRoot.add(object);
 	}, _loader.onProgress, _loader.onError );
