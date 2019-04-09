@@ -41,6 +41,11 @@ body {
 .colors li {
     width: 42px;
     height: 42px;
+    line-height: 42px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bolder;
     float: left;
-    margin: 6px
+    margin: 6px;
+    color: #fff;
 }

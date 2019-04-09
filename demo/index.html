@@ -24,12 +24,12 @@
     </div>
     <p id="pgbox">正在载入模型：<em id="pg"></em></p>
     <ul class="colors">
-        <li style="background-color:#015e70" data-color="#015e70"></li>
-        <li style="background-color:#d70605" data-color="#d70605"></li>
-        <li style="background-color:#585858" data-color="#585858"></li>
-        <li style="background-color:#ff4806" data-color="#ff4806"></li>
-        <li style="background-color:#a3733c" data-color="#a3733c"></li>
-        <li style="background-color:#549b1a" data-color="#549b1a"></li>
+        <li style="background-color:#015e70" data-color="#015e70" data-name="damo">1</li>
+        <li style="background-color:#d70605" data-color="#d70605" data-name="damo_s1">2</li>
+        <li style="background-color:#585858" data-color="#585858" data-name="damo_s2">3</li>
+        <li style="background-color:#ff4806" data-color="#ff4806" data-name="">4</li>
+        <li style="background-color:#a3733c" data-color="#a3733c">5</li>
+        <li style="background-color:#549b1a" data-color="#549b1a">6</li>
     </ul>
 </body>
 
@@ -60,7 +60,8 @@
     (function() {
         var index = (function() {
             var $this = this;
-            var scene, camera, renderer, controls, car, state, test, renderCount = 0;
+            var scene, camera, renderer, controls, car, state, test, renderCount = 0,thisObj = null;
+            this.groupCount=3;
             var mixers = [];
             var clock = new THREE.Clock();
             var modelname = "damo",masksObj = ['daji_s1'];
@@ -159,7 +160,7 @@
                             var percentComplete = xhr.loaded / xhr.total * 100;
                             var percent = Math.round(percentComplete, 2);
                             if (percent < 100) {
-                                pg.innerText = percent + "%";
+                                if(pg)  pg.innerText = percent + "%";
                             } else {
                                 document.getElementById("pgbox").innerText = "加载完毕";
                             }
@@ -179,7 +180,6 @@
                 };
                 var loader = new THREE.FBXLoader( ldmgr );
                 loader.load('./3dmax/'+ modelname +'.fbx', function( object ) {
-                    console.info('daji', object)
                     var material = new THREE.MeshPhongMaterial({
                         map:texturePlante
                     });
@@ -188,7 +188,7 @@
                     }
 
                     object.traverse( function ( child ) {
-                        console.info('data-child', child)
+                       
                         if ( child.isMesh ) {
                             child.material=material;
                             child.castShadow = true;
@@ -201,6 +201,7 @@
                     object.rotation.set(0,0,0)
 
                     scene.add(object);
+                    thisObj = object;
                 }, _loader.onProgress, _loader.onError );
 
             }
@@ -261,14 +262,26 @@
                 }
                 controls.update();
             }
+            
+            this.resetObject = function(_name){
+                scene.remove(thisObj);
+                modelname = _name;
+                initObject();
+            }
+            
             return $this;
         })();
         index.init();
 
+        window.console.warn=function(){}
+
         $(function() {
+
+            $(".colors li").eq(groupCount - 1).nextAll().remove();
             $(".colors li").click(function() {
                 var color = $(this).data("color");
-
+                var idx = $(this).data("name");
+                idx && index.resetObject(idx);
                 if (index.test) {
                     var material = new THREE.MeshBasicMaterial({
                         color: new THREE.Color(color)
@@ -281,5 +294,4 @@
         });
 
     })();
-    console.info('THREE.REVISION : ' + THREE.REVISION);
 </script>
