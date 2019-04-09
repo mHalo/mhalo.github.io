@@ -123,7 +123,7 @@
             var initCamera = function() {
 
                 camera = new THREE.PerspectiveCamera(20.00, width / height, 0.1, 10000.00); /*镜头*/
-                camera.position.set(0, 15, 100);
+                camera.position.set(0, 5, 100);
                 camera.rotation.x = -25.20;
                 // camera.rotation.y = 0;
                 // camera.rotation.z = 0;
@@ -197,7 +197,7 @@
                     });
 
                     object.position.set(0,-12,0);
-                    object.scale.set(10,10,10);
+                    object.scale.set(12,12,12);
                     object.rotation.set(0,0,0)
 
                     scene.add(object);
@@ -224,9 +224,11 @@
 
                 controls.enablePan = true;
                 controls.enableZoom = true;
+                controls.minZoom = 0.8;
 
                 controls.enableRotate = true;
-                controls.rotateSpeed = 0.5;
+                controls.rotateSpeed = 0.8;
+                
 
                 controls.addEventListener('change', render);
             };
@@ -265,13 +267,13 @@
             
             this.resetObject = function(_name){
                 scene.remove(thisObj);
+                var texture = new THREE.TextureLoader().load("./images/"+ _name +"-bg.jpg");
+                var skyBoxGeometry =  new THREE.CylinderBufferGeometry( 320, 320, 640, 80,80,true );
+                var skyBoxMaterial = new THREE.MeshBasicMaterial( { map:texture, side: THREE.DoubleSide } );
+                var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
+                scene.add(skyBox);
                 scene.background = function(){
-                    var texture = new THREE.TextureLoader().load("./images/"+ _name +"-bg.jpg");
-                    var skyBoxGeometry =  new THREE.CylinderGeometry( 3200, 3200, 3240, 32 );
-                    var skyBoxMaterial = new THREE.MeshBasicMaterial( { map:texture, side: THREE.DoubleSide } );
-                    var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
-                    scene.add(skyBox);
-                    return texture;
+                    //return texture;
                 }();
                 modelname = _name;
                 initObject();
