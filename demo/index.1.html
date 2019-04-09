@@ -265,7 +265,14 @@
             
             this.resetObject = function(_name){
                 scene.remove(thisObj);
-                
+                scene.background = function(){
+                    var texture = new THREE.TextureLoader().load("./images/"+ _name +"-bg.jpg");
+                    var skyBoxGeometry =  new THREE.CylinderGeometry( 3200, 3200, 3240, 32 );
+                    var skyBoxMaterial = new THREE.MeshBasicMaterial( { map:texture, side: THREE.DoubleSide } );
+                    var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
+                    scene.add(skyBox);
+                    return texture;
+                }();
                 modelname = _name;
                 initObject();
             }
