@@ -182,7 +182,7 @@
 
                     object.position.set(0,-12,0);
                     object.scale.set(9,9,9);
-
+                    _this_mixer = null;
                     console.info('model', object);
                     _this_mixer = object.mixer = new THREE.AnimationMixer( object );
 
@@ -202,7 +202,7 @@
                         var comeAction =  _this_mixer.clipAction(comeClip);
                         comeAction.loop = THREE.LoopOnce;
                         var idelshowAction = _this_mixer.clipAction(idelshowClip);
-                        idelshowAction.startAt(_this_mixer.time + comeClip.duration).play();
+                        idelshowAction.startAt(comeClip.duration).play();
                         comeAction.play();
                         _this_mixer.addEventListener( 'finished', function( e ) {
                             object.children.map(function(child){
