@@ -23,6 +23,7 @@ var mimeTypes = {
     "wma": "audio/x-ms-wma",
     "wmv": "video/x-ms-wmv",
     "mp3":"audio/mp3",
+    "mp4":"video/mp4",
     "xml": "text/xml",
     "obj": "application/x-tgif",
     "mtl": "application/octet-stream",

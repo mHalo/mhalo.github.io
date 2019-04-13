@@ -24,17 +24,18 @@
     </div>
     <p id="pgbox">正在载入模型：<em id="pg"></em></p>
     <ul class="colors">
-        <li style="background-color:#015e70" data-color="#015e70" data-name="ok_damo">dm</li>
-        <li style="background-color:#d70605" data-color="#d70605" data-name="ok_nezha">nz</li>
-        <li style="background-color:#585858" data-color="#585858" data-name="ok_wzj">zj</li>
-        <li style="background-color:#ff4806" data-color="#ff4806" data-name="ok_yyh">yh</li>
-        <li style="background-color:#a3733c" data-color="#a3733c" data-name="ok_zhaoyun">zy</li>
+        <li style="background-color:#015e70" data-color="#015e70" data-name="damo">1</li>
+        <li style="background-color:#d70605" data-color="#d70605" data-name="damo_s1">2</li>
+        <li style="background-color:#585858" data-color="#585858" data-name="damo_s2">3</li>
+        <li style="background-color:#ff4806" data-color="#ff4806" data-name="">4</li>
+        <li style="background-color:#a3733c" data-color="#a3733c">5</li>
+        <li style="background-color:#549b1a" data-color="#549b1a">6</li>
     </ul>
 </body>
 
 </html>
-<script src="https://threejs.org/build/three.js"></script>
-<script src="./scripts/threejs/loaders/XFBXLoader.js"></script>
+<script src="http://192.168.1.66:8333/threejs/build/three.js"></script>
+<script src="./scripts/threejs/loaders/JSONLoader.js"></script>
 <script src="./scripts/threejs/controls/OrbitControls.js"></script>
 
 <script src="./scripts/threejs/Detector.js"></script>
@@ -57,10 +58,9 @@
             var clock = new THREE.Clock();
 
             
-            var modelname = "wangzhaojun/GameObject/xx";
-            modelname = "ok_damo/xx";
+            var modelname = "nezha/1801_NeZha_Show1",masksObj = ['daji_s1'];
             var width = window.innerWidth,
-                height = 560;
+                height = 420;
             this.init = function() {
                 initScene();
                 clock.start();
@@ -73,11 +73,11 @@
 				scene.background = new THREE.Color( 0xffffff );
 				scene.fog = new THREE.Fog( 0xffffff, 2000, 10000 );
 
-                scene.add(new THREE.AmbientLight(0xffffff, 0.60)); /*添加环境光*/
+                scene.add(new THREE.AmbientLight(0xffffff, 0.50)); /*添加环境光*/
                 
-                var spotLight = new THREE.SpotLight( 0xffffff, 0.8 );
-                spotLight.position.set( -5, 35, 46 );
-                spotLight.angle = 0.2;
+                var spotLight = new THREE.SpotLight( 0xffffff, 1.02 );
+                spotLight.position.set( -5.30, 35.22, 46.52 );
+                spotLight.angle = 0.814;
                 spotLight.penumbra = 0.94;
                 spotLight.decay = 0.94;
                 spotLight.distance = 0;
@@ -86,27 +86,23 @@
 
                 var spotLight2 = new THREE.SpotLight( 0xffffff, 0.24 );
                 spotLight2.position.set( 0, 45, 0 );
-                spotLight2.angle = 0.2;
-                spotLight2.penumbra = 0.5;
+                spotLight2.angle = 0.234;
+                spotLight2.penumbra = 0.05;
                 spotLight2.decay = 1;
                 spotLight2.distance = 0;
                 spotLight2.castShadow = true;
                 scene.add(spotLight2)
 
-                // var hemisphereLight = new THREE.HemisphereLight( 0x00aaff, 0xffaa00, 0.12 );
-                // scene.add( hemisphereLight );
+                var hemisphereLight = new THREE.HemisphereLight( 0x00aaff, 0xffaa00, 0.12 );
+                scene.add( hemisphereLight );
 
-                var pointLight = new THREE.PointLight( 0xffffff, 0.54, 0, 2 );
-                pointLight.position.set( 0, 32, 0 );
+                var pointLight = new THREE.PointLight( 0xffffff, 0.54, 0, 0.76 );
+                pointLight.position.set( 0, 33.70, 0 );
                 scene.add( pointLight );
 
-                var pointLight2 = new THREE.PointLight( 0xffffff, 0.8, 0, 0.76 );
-                pointLight2.position.set( 0, 0, 1 );
-                scene.add( pointLight2 );
-
-                // var gridHelper = new THREE.GridHelper( 25, 25 ) ;
-                // gridHelper.position.y = -12; 
-                // scene.add( gridHelper );
+                var gridHelper = new THREE.GridHelper( 25, 25 ) ;
+                gridHelper.position.y = -12; 
+                scene.add( gridHelper );
 
 
                 stat = new Stats(); //实例化stat
@@ -176,55 +172,41 @@
                 ldmgr.onProgress = function( item, loaded, total ) {
                     console.log( item, loaded, total );
                 };
-                var loader = new THREE.FBXLoader(ldmgr);
+                var loader = new THREE.FBXLoader( ldmgr );
                 loader.load('./3dmax/'+ modelname +'.fbx', function( object ) {
                     $this.actions=[];
 
                     object.position.set(0,-12,0);
-                    object.scale.set(9,9,9);
+                    object.scale.set(10,10,10);
+
 
                     console.info('model', object);
+
                     _this_mixer = object.mixer = new THREE.AnimationMixer( object );
+                    _this_mixer = new THREE.AnimationMixer( object );
+                    _this_mixer.stopAllAction ();
+                    //_this_mixer.timeScale = 0.2;
 
-                    console.info('animations',object.animations)
+                    var clip  = object.animations[1];
+                    clip.optimize ()
+                    clip.trim ()
+                    clip.resetDuration ()
+                    console.info('clip',clip)
+                    var action = _this_mixer.clipAction(clip,object);
+                    action.weight = 1;
+                    action.setEffectiveWeight( 1 );
 
-                    var idelshowClip = THREE.AnimationClip.findByName(object.animations,'Armature|Armature|Idleshow|Base Layer');
-                    var comeClip = THREE.AnimationClip.findByName(object.animations,'Armature|Armature|Come|Base Layer');
-                    if(comeClip){
-                        idelshowClip.duration = idelshowClip.duration - 0.2;
-                        if(object.children.filter(function(s){ return s.name ==='1761_YangYuHuan_PaPa_High_0'; }).length > 0){
-                            comeClip.duration = comeClip.duration - 0.6;
-                        }
-                        else{
-                            comeClip.duration = comeClip.duration - 0.2;
-                        }
-                        comeClip.clampWhenFinished = true;
-                        var comeAction =  _this_mixer.clipAction(comeClip);
-                        comeAction.loop = THREE.LoopOnce;
-                        var idelshowAction = _this_mixer.clipAction(idelshowClip);
-                        idelshowAction.startAt(_this_mixer.time + comeClip.duration).play();
-                        comeAction.play();
-                        _this_mixer.addEventListener( 'finished', function( e ) {
-                            object.children.map(function(child){
-                                if(child.name === '1314_LiBai_FengHuang_0'){
-                                    child.visible = false;
-                                }
-                                if(child.name === '1761_YangYuHuan_PaPa_High_0'){
-                                    child.visible = true;
-                                }
-                            });
-                        } );
-                    }
+                    // action.timeScale = 0.64;
+                    // action.setEffectiveTimeScale( 0.64 );
+
+
+                    console.info('action',action)
+                    action.play();
+                    _this_action = action;
+
                     object.traverse( function ( child ) {
-                        if (child.isMesh) {
-                            if(['guangzhu_van_01_0','zhuanquan_01_0','1761_YangYuHuan_PaPa_High_0','other_a_0002_clamp_07','Plane_a_0051_0','Plane_a_0052_0','Plane_a_0053_0','Plane_a_0054_0'].indexOf(child.name)>=0) {
-                                child.visible = false;
-                             }
+                        if ( child.isMesh ) {
                             console.info('child',child)
-                            console.info('child.material.specular',child.material.specular)
-                            child.material.specular = new THREE.Color(0x222222);
-                            child.material.transparent = false;
-                            child.material.vertexColors = THREE.NoColors;
                             child.castShadow = true;
                             child.receiveShadow = true;
                         };
@@ -240,7 +222,6 @@
                 controls = new THREE.OrbitControls(camera, document.getElementById("carBox"), {
                     enableRotateY: false,
                     rotateMoveCallback: function(ctl) {
-                        console.info('x')
                         // ctl.autoRotate = false;
                         // clearTimeout(ctl.autoRotateTimer);
                         // ctl.autoRotateTimer = setTimeout(function() {
@@ -255,12 +236,12 @@
                 controls.dampingFactor = 0.3;
 
                 //controls.enablePan = true;
-                controls.enableZoom = true;
-                controls.maxZoom = 1.8;
-                controls.minZoom = 0.8;
+                //controls.enableZoom = true;
 
-                controls.enableRotate = true;
+                //controls.enableRotate = true;
                 //controls.rotateSpeed = 0.5;
+
+                controls.addEventListener('change', render);
             };
             var windowResize = function() {
                 camera.aspect = width / height;
@@ -287,11 +268,9 @@
                 }
                 renderer.render( scene, camera );
             };
-
-
             var animate = function() {
                 requestAnimationFrame(animate);
-                var delta = clock.getDelta();
+                var delta = 0.75 * clock.getDelta();
                 render(delta);
                 stat.update();
                 controls.update();
@@ -311,10 +290,14 @@
 
         $(function() {
 
+            $(".colors li").eq(groupCount - 1).nextAll().remove();
             $(".colors li").click(function() {
                 var color = $(this).data("color");
-                var idx = $(this).data("name") + '/xx';
+                var idx = $(this).data("name");
                 idx && index.resetObject(idx);
+
+                
+
                 if (index.test) {
                     var material = new THREE.MeshBasicMaterial({
                         color: new THREE.Color(color)
