@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0",
+  "nodes": [
+    {
+      "id": "dba643ec-78ec-4c61-879e-8caf47fd06e2",
+      "type": "image",
+      "x": 74.66666666666666,
+      "y": -73.33333333333329,
+      "width": 180,
+      "height": 100.46511627906978,
+      "status": "success",
+      "serverMedia": {
+        "primary": {
+          "id": "ad7bc489-8059-4ecd-af07-1304193c149e",
+          "md5": "401c894bfcd33f80901ff3c2109b0fd4",
+          "url": "/upload-files/2026-04/15/401c894b-lr0jawb7.png",
+          "mediaId": "ad7bc489-8059-4ecd-af07-1304193c149e"
+        }
+      },
+      "sessionId": "6fa2c557-8295-49b4-a120-6d5afd7bb5dd"
+    },
+    {
+      "id": "c8e1d945-2eff-47de-8805-38fadc6d4d92",
+      "type": "image",
+      "x": 100,
+      "y": 67.13178294573649,
+      "width": 200,
+      "height": 150,
+      "status": "loading",
+      "prompt": "一只小狗在海边的沙滩上奔跑",
+      "taskId": "44ecc0c9-5e73-4ab2-ad71-c8e9e7932e5f",
+      "sessionId": "6fa2c557-8295-49b4-a120-6d5afd7bb5dd"
+    }
+  ]
+}
